@@ -1,6 +1,6 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import { FastifyInstanceType } from '../../types/FastifyInstanceType.js';
-import { memberTypeObjectType } from '../../typedefs/memberTypeObjectType.js';
+import { memberTypeIdObjectType, memberTypeObjectType } from '../../typedefs/memberTypeObjectType.js';
 
 export const getMemberTypeById = async (
   fInstance: FastifyInstanceType,
@@ -23,7 +23,7 @@ export const getAllMemberTypes = async (fInstance: FastifyInstanceType) => {
 export const memberType: GraphQLFieldConfig<FastifyInstanceType, null, { id: string }> = {
   type: memberTypeObjectType,
   args: {
-    id: { type: new GraphQLNonNull(GraphQLString) },
+    id: { type: new GraphQLNonNull(memberTypeIdObjectType) },
   },
   resolve: getMemberTypeById,
 };
