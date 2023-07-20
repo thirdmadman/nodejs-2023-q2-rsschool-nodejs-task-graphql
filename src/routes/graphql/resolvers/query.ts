@@ -1,3 +1,4 @@
+import { memberType, memberTypes } from './member-type/queries.js';
 import { post, posts } from './post/queries.js';
 import { user, users } from './user/queries.js';
 
@@ -6,4 +7,6 @@ export const query = {
   posts,
   user,
   users,
+  memberType,
+  memberTypes,
 };
