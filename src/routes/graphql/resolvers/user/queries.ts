@@ -1,4 +1,9 @@
-import { GraphQLFieldConfig, GraphQLList, GraphQLNonNull } from 'graphql';
+import {
+  GraphQLFieldConfig,
+  GraphQLList,
+  GraphQLNonNull,
+  GraphQLResolveInfo,
+} from 'graphql';
 import { FastifyInstanceType } from '../../types/FastifyInstanceType.js';
 import { UUIDType } from '../../types/uuid.js';
 import { userObjectType } from '../../typedefs/userObjectType.js';
@@ -14,50 +19,12 @@ export const getUserById = async (
 ) => {
   const { prisma } = fInstance;
 
-  const user = await prisma.user.findUnique({
+  return await prisma.user.findUnique({
     where: {
       id,
     },
   });
-
-  if (!user) {
-    return null;
-  }
-
-  const profile = await prisma.profile.findUnique({
-    where: {
-      userId: id,
-    },
-  });
-
-  if (!profile) {
-    return user;
-  }
-
-  const memberType = await prisma.memberType.findUnique({
-    where: {
-      id: profile.memberTypeId,
-    },
-  });
-
-  if (!memberType) {
-    return {...user, profile};
-  }
-
-  return {...user, profile: {...profile, memberType}};;
 };
-
-// export const getUserProfileByUserId = async (
-//   fInstance: FastifyInstanceType,
-//   { id }: { id: string },
-// ) => {
-//   const { prisma } = fInstance;
-//   return await prisma.profile.findUnique({
-//     where: {
-//       userId: id,
-//     },
-//   });
-// };
 
 export const users: GraphQLFieldConfig<FastifyInstanceType, null, null> = {
   type: new GraphQLNonNull(new GraphQLList(userObjectType)),
@@ -70,4 +37,54 @@ export const user: GraphQLFieldConfig<FastifyInstanceType, null, { id: string }>
     id: { type: new GraphQLNonNull(UUIDType) },
   },
   resolve: getUserById,
+};
+
+type UserType = {
+  id: string;
+  name: string;
+  balance: number;
+};
+
+export const getUserSubscribedToField: GraphQLFieldConfig<UserType, null> = {
+  type: new GraphQLNonNull(new GraphQLList(userObjectType)),
+  resolve: async (
+    source: UserType,
+    args: any,
+    ctx: any,
+    graphQLResolveInfo: GraphQLResolveInfo,
+  ) => {
+    const res = graphQLResolveInfo.rootValue as FastifyInstanceType;
+    const { prisma } = res;
+    return prisma.user.findMany({
+      where: {
+        subscribedToUser: {
+          some: {
+            subscriberId: source.id,
+          },
+        },
+      },
+    });
+  },
+};
+
+export const getUsersSubscribedToUserField: GraphQLFieldConfig<UserType, null> = {
+  type: new GraphQLNonNull(new GraphQLList(userObjectType)),
+  resolve: async (
+    source: UserType,
+    args: any,
+    ctx: any,
+    graphQLResolveInfo: GraphQLResolveInfo,
+  ) => {
+    const res = graphQLResolveInfo.rootValue as FastifyInstanceType;
+    const { prisma } = res;
+    return prisma.user.findMany({
+      where: {
+        userSubscribedTo: {
+          some: {
+            authorId: source.id,
+          },
+        },
+      },
+    });
+  },
 };
