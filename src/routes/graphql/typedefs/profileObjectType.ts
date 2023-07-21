@@ -1,6 +1,6 @@
 import { GraphQLBoolean, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
 import { UUIDType } from "../types/uuid.js";
-import { memberTypeObjectType } from "./memberTypeObjectType.js";
+import { getMemberTypeField } from "../resolvers/member-type/queries.js";
 
 export const profileObjectType = new GraphQLObjectType({
   name: "Profile",
@@ -10,6 +10,6 @@ export const profileObjectType = new GraphQLObjectType({
     yearOfBirth: { type: new GraphQLNonNull(GraphQLInt) },
     userId: { type: new GraphQLNonNull(UUIDType) },
     memberTypeId: { type: new GraphQLNonNull(GraphQLString) },
-    memberType: { type: memberTypeObjectType },
+    memberType: getMemberTypeField,
   }),
 })
