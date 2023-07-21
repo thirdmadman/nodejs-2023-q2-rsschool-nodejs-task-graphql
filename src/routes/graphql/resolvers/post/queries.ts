@@ -1,4 +1,4 @@
-import { GraphQLFieldConfig, GraphQLList, GraphQLNonNull } from 'graphql';
+import { GraphQLFieldConfig, GraphQLList, GraphQLNonNull, GraphQLResolveInfo } from 'graphql';
 import { FastifyInstanceType } from '../../types/FastifyInstanceType.js';
 import { postObjectType } from '../../typedefs/postObjectType.js';
 import { UUIDType } from '../../types/uuid.js';
@@ -27,6 +27,25 @@ export const post: GraphQLFieldConfig<FastifyInstanceType, null, { id: string }>
     id: { type: new GraphQLNonNull(UUIDType) },
   },
   resolve: getPostById,
+};
+
+type UserType = {
+  id: string,
+  name: string,
+  balance: number,
+}
+
+export const getPostsField: GraphQLFieldConfig<UserType, null> = {
+  type: new GraphQLNonNull(new GraphQLList(postObjectType)),
+  resolve: async (source: UserType, args: any, ctx: any, graphQLResolveInfo: GraphQLResolveInfo ) => {
+    const res = graphQLResolveInfo.rootValue as FastifyInstanceType;
+    const { prisma } = res;
+    return await prisma.post.findMany({
+      where: {
+        authorId: source.id,
+      },
+    });
+  }
 };
 
 export const posts: GraphQLFieldConfig<FastifyInstanceType, null, null> = {
