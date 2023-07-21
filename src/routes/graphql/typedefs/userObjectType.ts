@@ -1,13 +1,24 @@
-import { GraphQLFloat, GraphQLNonNull, GraphQLObjectType, GraphQLString } from "graphql";
-import { UUIDType } from "../types/uuid.js";
-import { profileObjectType } from "./profileObjectType.js";
+import {
+  GraphQLFloat,
+  GraphQLNonNull,
+  GraphQLObjectType,
+  GraphQLString,
+} from 'graphql';
+import { UUIDType } from '../types/uuid.js';
 
-export const userObjectType = new GraphQLObjectType({
-  name: "User",
+import { getProfileField } from '../resolvers/profile/queries.js';
+import { getPostsField } from '../resolvers/post/queries.js';
+import { getUserSubscribedToField, getUsersSubscribedToUserField } from '../resolvers/user/queries.js';
+
+export const userObjectType: GraphQLObjectType = new GraphQLObjectType({
+  name: 'User',
   fields: () => ({
     id: { type: new GraphQLNonNull(UUIDType) },
     name: { type: new GraphQLNonNull(GraphQLString) },
     balance: { type: new GraphQLNonNull(GraphQLFloat) },
-    profile: { type: profileObjectType },
+    profile: getProfileField,
+    userSubscribedTo: getUserSubscribedToField,
+    subscribedToUser: getUsersSubscribedToUserField,
+    posts: getPostsField,
   }),
-})
+});
