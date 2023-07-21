@@ -1,4 +1,4 @@
-import { GraphQLFieldConfig, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
+import { GraphQLFieldConfig, GraphQLList, GraphQLNonNull, GraphQLResolveInfo, GraphQLString } from 'graphql';
 import { FastifyInstanceType } from '../../types/FastifyInstanceType.js';
 import { memberTypeIdObjectType, memberTypeObjectType } from '../../typedefs/memberTypeObjectType.js';
 
@@ -26,6 +26,27 @@ export const memberType: GraphQLFieldConfig<FastifyInstanceType, null, { id: str
     id: { type: new GraphQLNonNull(memberTypeIdObjectType) },
   },
   resolve: getMemberTypeById,
+};
+
+type ProfileType = {
+  id: string,
+  isMale: boolean,
+  yearOfBirth: number,
+  userId: string,
+  memberTypeId: string,
+}
+
+export const getMemberTypeField: GraphQLFieldConfig<ProfileType, null> = {
+  type: memberTypeObjectType,
+  resolve: async (source: ProfileType, args: any, ctx: any, graphQLResolveInfo: GraphQLResolveInfo ) => {
+    const res = graphQLResolveInfo.rootValue as FastifyInstanceType;
+    const { prisma } = res;
+    return await prisma.memberType.findUnique({
+      where: {
+        id: source.memberTypeId,
+      },
+    });
+  },
 };
 
 export const memberTypes: GraphQLFieldConfig<FastifyInstanceType, null, null> = {
