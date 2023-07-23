@@ -1,6 +1,6 @@
-import { createPost, deletePost } from "./post/mutations.js";
-import { createProfile, deleteProfile } from "./profile/mutations.js";
-import { createUser, deleteUser } from "./user/mutations.js";
+import { changePost, createPost, deletePost } from './post/mutations.js';
+import { changeProfile, createProfile, deleteProfile } from './profile/mutations.js';
+import { changeUser, createUser, deleteUser } from './user/mutations.js';
 
 export const mutation = {
   createPost,
@@ -9,4 +9,7 @@ export const mutation = {
   deleteUser,
   deleteProfile,
   deletePost,
+  changeUser,
+  changePost,
+  changeProfile,
 };
