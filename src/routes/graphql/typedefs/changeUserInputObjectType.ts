@@ -1,8 +1,8 @@
-import { GraphQLInputObjectType, GraphQLNonNull, GraphQLString } from "graphql";
+import { GraphQLInputObjectType, GraphQLString } from "graphql";
 
 export const changeUserInputObjectType = new GraphQLInputObjectType({
   name: 'ChangeUserInput',
   fields: {
-    name: { type: new GraphQLNonNull(GraphQLString) },
+    name: { type: GraphQLString },
   },
 });
