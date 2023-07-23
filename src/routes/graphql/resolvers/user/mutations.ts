@@ -65,7 +65,7 @@ export const changeUser: GraphQLFieldConfig<
   type: userObjectType,
   args: {
     id: { type: new GraphQLNonNull(UUIDType) },
-    dto: { type: changeUserInputObjectType },
+    dto: { type: new GraphQLNonNull(changeUserInputObjectType) },
   },
   resolve: changeUserByIdAndDTO,
 };

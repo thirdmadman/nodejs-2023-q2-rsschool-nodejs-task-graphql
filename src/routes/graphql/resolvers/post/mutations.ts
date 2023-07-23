@@ -66,7 +66,7 @@ export const changePost: GraphQLFieldConfig<
   type: postObjectType,
   args: {
     id: { type: new GraphQLNonNull(UUIDType) },
-    dto: { type: changePostInputObjectType },
+    dto: { type: new GraphQLNonNull(changePostInputObjectType) },
   },
   resolve: changePostByIdAndDTO,
 };

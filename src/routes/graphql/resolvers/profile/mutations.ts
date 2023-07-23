@@ -77,7 +77,7 @@ export const changeProfile: GraphQLFieldConfig<
   type: profileObjectType,
   args: {
     id: { type: new GraphQLNonNull(UUIDType) },
-    dto: { type: changeProfileInputObjectType },
+    dto: { type: new GraphQLNonNull(changeProfileInputObjectType) },
   },
   resolve: changeProfileByIdAndDTO,
 };
