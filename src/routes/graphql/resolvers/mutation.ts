@@ -1,9 +1,12 @@
-import { createPost } from "./post/mutations.js";
-import { createProfile } from "./profile/mutations.js";
-import { createUser } from "./user/mutations.js";
+import { createPost, deletePost } from "./post/mutations.js";
+import { createProfile, deleteProfile } from "./profile/mutations.js";
+import { createUser, deleteUser } from "./user/mutations.js";
 
 export const mutation = {
   createPost,
   createProfile,
-  createUser
+  createUser,
+  deleteUser,
+  deleteProfile,
+  deletePost,
 };

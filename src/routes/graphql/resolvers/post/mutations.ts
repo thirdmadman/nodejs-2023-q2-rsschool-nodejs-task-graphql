@@ -1,7 +1,8 @@
-import { GraphQLFieldConfig, GraphQLNonNull } from "graphql";
+import { GraphQLBoolean, GraphQLFieldConfig, GraphQLNonNull } from "graphql";
 import { FastifyInstanceType } from "../../types/FastifyInstanceType.js";
 import { postObjectType } from "../../typedefs/postObjectType.js";
 import { createPostInputObjectType } from "../../typedefs/createPostInputObjectType.js";
+import { UUIDType } from "../../types/uuid.js";
 
 type PostDTO = {
   title: string,
@@ -25,4 +26,19 @@ export const createPost: GraphQLFieldConfig<FastifyInstanceType, null, { dto: Po
     dto: { type: createPostInputObjectType },
   },
   resolve: createPostByDTO,
+};
+
+const deletePostById = async (fInstance: FastifyInstanceType, {id} : { id: string }) => {
+  const { prisma } = fInstance;
+  await prisma.post.delete({
+    where: {
+      id,
+    },
+  });
+};
+
+export const deletePost: GraphQLFieldConfig<FastifyInstanceType, null, { id: string }> = {
+  type: GraphQLBoolean,
+  args: { id: { type: new GraphQLNonNull(UUIDType)}},
+  resolve: deletePostById,
 };

@@ -1,8 +1,9 @@
-import { GraphQLFieldConfig, GraphQLNonNull } from "graphql";
+import { GraphQLBoolean, GraphQLFieldConfig, GraphQLNonNull } from "graphql";
 import { FastifyInstanceType } from "../../types/FastifyInstanceType.js";
 
 import { profileObjectType } from "../../typedefs/profileObjectType.js";
 import { createProfileInputObjectType } from "../../typedefs/createProfileInputObjectType.js";
+import { UUIDType } from "../../types/uuid.js";
 
 type ProfileDTO = {
   userId: string,
@@ -27,4 +28,20 @@ export const createProfile: GraphQLFieldConfig<FastifyInstanceType, null, { dto:
     dto: { type: createProfileInputObjectType },
   },
   resolve: createProfileByDTO,
+};
+
+
+const deleteProfileById = async (fInstance: FastifyInstanceType, {id} : { id: string }) => {
+  const { prisma } = fInstance;
+  await prisma.profile.delete({
+    where: {
+      id,
+    },
+  });
+};
+
+export const deleteProfile: GraphQLFieldConfig<FastifyInstanceType, null, { id: string }> = {
+  type: GraphQLBoolean,
+  args: { id: { type: new GraphQLNonNull(UUIDType)}},
+  resolve: deleteProfileById,
 };
